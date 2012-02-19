@@ -1,12 +1,9 @@
 #include "Session.h"
+#include "Console.h"
 using namespace std;
 
 void echo(const char str[]) {
-	printf("%s%s", str, "\n");
-}
-
-void quit() {
-	exit(0);
+	Console::GetSingleton() << wxString(str, wxConvUTF8) << wxT("\n");
 }
 
 Session::Session() {
@@ -34,9 +31,7 @@ Session::Session() {
 			.def("rand", &Database::random)
 			.def("print", &Database::print)
 			.def("save", &Database::save)
-			.def("load", &Database::load),
-		luabind::def("exit", &quit),
-		luabind::def("quit", &quit)
+			.def("load", &Database::load)
 	];
 }
 
@@ -46,16 +41,16 @@ Session::~Session() {
 
 void Session::doString(const char str[]) {
 	if(luaL_dostring(state, str)) {
-		cout << "Error: ";
-		cout << lua_tostring(state, -1) << endl;
+		Console::GetSingleton() << wxT("Error: ");
+		Console::GetSingleton() << wxString(lua_tostring(state, -1), wxConvUTF8) << wxT("\n");
 		lua_pop(state, 1);
 	}
 }
 
 void Session::doFile(const char filename[]) {
 	if(luaL_dofile(state, filename)) {
-		cout << "Error: ";
-		cout << lua_tostring(state, -1) << endl;
+		Console::GetSingleton() << wxT("Error: ");
+		Console::GetSingleton() << wxString(lua_tostring(state, -1), wxConvUTF8) << wxT("\n");
 		lua_pop(state, 1);
 	}
 }

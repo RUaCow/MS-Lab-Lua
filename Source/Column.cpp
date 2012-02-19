@@ -1,4 +1,5 @@
 #include "Column.h"
+#include "Console.h"
 using namespace std;
 
 Column::Column(const char name[], Type type) : type(type) {
@@ -41,8 +42,8 @@ bool Column::isReal() const {
 }
 
 void Column::print() const {
-	cout << name << ": ";
+	Console::GetSingleton() << wxString(name, wxConvUTF8) << wxT(": ");
 	for(size_t i = 0; i < data.size(); i ++)
-		cout << data[i].toString() << " ";
-	cout << endl;
+		Console::GetSingleton() << wxString(data[i].toString(), wxConvUTF8) << wxT(" ");
+	Console::GetSingleton() << wxT("\n");
 }
