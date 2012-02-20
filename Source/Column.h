@@ -42,7 +42,7 @@ public:
 	~Column();
 
 	void push_back(const Variable &var);
-	void setByArray(int size, luabind::object const& data);
+	void push(int size, luabind::object const& lua_arr);
 
 	bool isString() const;
 	bool isInteger() const;

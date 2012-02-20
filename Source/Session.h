@@ -26,7 +26,8 @@ public:
 	void doString(const char str[]);
 	void doFile(const char filename[]);
 
-	void terminate();
+	void start();
+	void close();
 
 }; // class Session
 

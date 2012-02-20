@@ -14,18 +14,17 @@ void Column::push_back(const Variable &var) {
 	data.push_back(var);
 }
 
-void Column::setByArray(int size, luabind::object const& data) {
-	this->data.clear();
+void Column::push(int size, luabind::object const& lua_arr) {
 	for(int i = 1; i <= size; i ++)
 		if(type == VAR_STRING) {
-			const char* var = luabind::object_cast<const char*>(data[i]);
-			this->data.push_back(Variable(var));
+			const char* var = luabind::object_cast<const char*>(lua_arr[i]);
+			data.push_back(Variable(var));
 		} else if(type == VAR_INTEGER) {
-			int var = luabind::object_cast<int>(data[i]);
-			this->data.push_back(Variable(var));
+			int var = luabind::object_cast<int>(lua_arr[i]);
+			data.push_back(Variable(var));
 		} else if(type == VAR_REAL) {
-			float var = luabind::object_cast<float>(data[i]);
-			this->data.push_back(Variable(var));
+			float var = luabind::object_cast<float>(lua_arr[i]);
+			data.push_back(Variable(var));
 		}
 }
 

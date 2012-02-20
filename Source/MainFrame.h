@@ -8,7 +8,7 @@
 #define _MAINFRAME_H
 
 #include <wx/wx.h>
-#include "FrameManager.h"
+#include "wxFrameManager.h"
 
 #include "Session.h"
 #include "Console.h"

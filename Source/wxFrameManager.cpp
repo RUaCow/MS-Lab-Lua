@@ -12,7 +12,7 @@
 #include <wx/wx.h>
 #include <wx/minifram.h>
 #include <wx/image.h>
-#include "FrameManager.h"
+#include "wxFrameManager.h"
 
 
 // -- various array and event implementations --

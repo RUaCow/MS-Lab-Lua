@@ -28,12 +28,15 @@ public:
 	Database();
 	~Database();
 
+	Database(const Database &db); // Copy constructor
+	void operator= (const Database &db);
+
 	void clear();
 
 	Column* newColumn(const char name[], Column::Type type);
 	void addColumn(Column *column);
 
-	Database* random(int n) const;
+	Database random(int n) const;
 
 	void print() const;
 

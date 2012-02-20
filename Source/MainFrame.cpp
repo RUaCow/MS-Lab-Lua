@@ -157,6 +157,10 @@ void MainFrame::onExecute(wxCommandEvent &event) {
 	wxCommandEvent tmp;
 	onSave(tmp);
 	console->Clear();
+
+	Console::GetSingleton() << wxT("Restarting session\n");
+	session.close();
+	session.start();
 	Console::GetSingleton() << wxT("Executing: ") << filename << "\n";
 	session.doFile(filename.char_str());
 	Console::GetSingleton() << "Execution done" << "\n";
