@@ -7,19 +7,15 @@
 #ifndef _CONSOLE_H
 #define _CONSOLE_H
 
+#include "Singleton.h"
 #include <wx/wx.h>
 
-class Console : public wxTextCtrl {
-
-	static Console *singleton_ptr;
+class Console : public wxTextCtrl, public Singleton<Console> {
 
 public:
 
 	Console(wxWindow *parent);
 	~Console();
-
-	static Console& GetSingleton();
-	static Console* GetSingletonPtr();
 
 }; // class Console
 

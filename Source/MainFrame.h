@@ -8,27 +8,24 @@
 #define _MAINFRAME_H
 
 #include <wx/wx.h>
+#include <wx/notebook.h>
 #include "wxFrameManager.h"
 
-#include "Session.h"
 #include "Console.h"
 
 class MainFrame : public wxFrame {
 
 	wxFrameManager manager;
-
-	wxTextCtrl *textCode;
-	wxString filename;
-
 	Console *console;
 
-	Session session;
+	wxNotebook *notebook;
 
 	// File menu items
 	wxMenuItem *itemNew;
 	wxMenuItem *itemOpen;
 	wxMenuItem *itemSave;
 	wxMenuItem *itemSaveAs;
+	wxMenuItem *itemClose;
 	wxMenuItem *itemExit;
 
 	// Edit Menu Items
@@ -53,6 +50,7 @@ private:
 	void onOpen(wxCommandEvent &event);
 	void onSave(wxCommandEvent &event);
 	void onSaveAs(wxCommandEvent &event);
+	void onClose(wxCommandEvent &event);
 	void onExit(wxCommandEvent &event);
 
 	void onUndo(wxCommandEvent &event);

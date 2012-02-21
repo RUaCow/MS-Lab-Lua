@@ -1,17 +1,9 @@
 #include "Console.h"
 
-Console* Console::singleton_ptr = NULL;
-
-Console::Console(wxWindow *parent) : wxTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_PROCESS_ENTER) {
-	singleton_ptr = this;
+Console::Console(wxWindow *parent) : wxTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY) {
+	this->SetFont(wxFont(11, 70, 90, 90, false, wxT("Courier New")));
 }
 
-Console::~Console() { }
+Console::~Console() {
 
-Console& Console::GetSingleton() {
-	return (*singleton_ptr);
-}
-
-Console* Console::GetSingletonPtr() {
-	return singleton_ptr;
 }

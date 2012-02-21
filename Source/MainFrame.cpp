@@ -1,17 +1,15 @@
 #include "MainFrame.h"
-#include <iostream>
+#include "CodeCtrl.h"
 using namespace std;
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
-	filename = wxEmptyString;
-
 	manager.SetFrame(this);
 
 	wxMenu *menuFile = new wxMenu();
 	wxMenu *menuEdit = new wxMenu();
 	wxMenu *menuProject = new wxMenu();
 
-	itemNew = new wxMenuItem(menuFile, wxID_NEW, wxT("New Script\tCtrl+N"));
+	itemNew = new wxMenuItem(menuFile, wxID_NEW, wxT("New Script\tCtrl+T"));
 	menuFile->Append(itemNew);
 	itemOpen = new wxMenuItem(menuFile, wxID_OPEN, wxT("Open File\tCtrl+O"));
 	menuFile->Append(itemOpen);
@@ -21,6 +19,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
 	itemSaveAs = new wxMenuItem(menuFile, wxID_SAVEAS, wxT("Save File As"));
 	menuFile->Append(itemSaveAs);
 	menuFile->AppendSeparator();
+	itemClose = new wxMenuItem(menuFile, wxID_CLOSE, wxT("Close File\tCtrl+W"));
+	menuFile->Append(itemClose);
 	itemExit = new wxMenuItem(menuFile, wxID_EXIT, wxT("Exit\tAlt+F4"));
 	menuFile->Append(itemExit);
 
@@ -54,13 +54,10 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
 
 	// Create controls
 	
-	textCode = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxHSCROLL);
-	textCode->SetFont(wxFont(11, 70, 90, 90, false, wxT("Courier New")));
-	textCode->SetFocus();
-	manager.AddPane(textCode, wxCENTER);
+	notebook = new wxNotebook(this, wxID_ANY);
+	manager.AddPane(notebook, wxCENTER);
 	
 	console = new Console(this);
-	console->SetFont(wxFont(11, 70, 90, 90, false, wxT("Courier New")));
 	manager.AddPane(console, wxBOTTOM);
 
 	manager.Update();
@@ -70,6 +67,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
 	Connect(itemOpen->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onOpen));
 	Connect(itemSave->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onSave));
 	Connect(itemSaveAs->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onSaveAs));
+	Connect(itemClose->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onClose));
 	Connect(itemExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onExit));
 
 	Connect(itemUndo->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrame::onUndo));
@@ -83,40 +81,62 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
 }
 
 MainFrame::~MainFrame() {
-	// TODO: Ask if the file is changed
 	manager.UnInit();
 }
 
 void MainFrame::onNew(wxCommandEvent &event) {
-	// TODO: Ask if the file is changed
-	textCode->Clear();
-	filename = wxEmptyString;
+	notebook->AddPage(new CodeCtrl(notebook), wxEmptyString, true);
 }
 
 void MainFrame::onOpen(wxCommandEvent &event) {
-	// TODO: Ask if the file is changed
 	wxFileDialog dialog(this, wxT("Open file"), wxEmptyString, wxEmptyString, wxT("Lua script files (*.lua)|*.lua"), wxFD_OPEN);
 	if(dialog.ShowModal() == wxID_OK) {
-		textCode->LoadFile(dialog.GetPath());
-		filename = dialog.GetPath();
+		CodeCtrl *control = new CodeCtrl(notebook);
+		control->load(dialog.GetFilename(), dialog.GetPath());
+		notebook->AddPage(control, dialog.GetFilename(), true);
 	}
 }
 
 void MainFrame::onSave(wxCommandEvent &event) {
-	if(!filename) {
+	CodeCtrl *active = (CodeCtrl*) notebook->GetCurrentPage();
+	if(!active)
+		return;
+
+	if(active->fileaddr != wxEmptyString)
+		active->save();
+	else {
 		wxFileDialog dialog(this, wxT("Save file"), wxEmptyString, wxEmptyString, wxT("Lua script files (*.lua)|*.lua"), wxFD_SAVE);
-		if(dialog.ShowModal() == wxID_OK) 
-			filename = dialog.GetPath();
+		if(dialog.ShowModal() == wxID_OK)
+			active->save(dialog.GetFilename(), dialog.GetPath());
 	}
-	textCode->SaveFile(filename);
 }
 
 void MainFrame::onSaveAs(wxCommandEvent &event) {
+	CodeCtrl *active = (CodeCtrl*) notebook->GetCurrentPage();
+	if(!active)
+		return;
+
 	wxFileDialog dialog(this, wxT("Save file"), wxEmptyString, wxEmptyString, wxT("Lua script files (*.lua)|*.lua"), wxFD_SAVE);
 	if(dialog.ShowModal() == wxID_OK) {
-		textCode->SaveFile(dialog.GetPath());
-		filename = dialog.GetPath();
+		active->save(dialog.GetFilename(), dialog.GetPath());
+		int pageNumber = 0;
+		for(int i = 0; i < notebook->GetPageCount(); i ++)
+			if(notebook->GetPage(i) == active)
+				pageNumber = i;
+		notebook->SetPageText(pageNumber, dialog.GetFilename());
 	}
+}
+
+void MainFrame::onClose(wxCommandEvent &event) {
+	CodeCtrl *active = (CodeCtrl*) notebook->GetCurrentPage();
+	if(!active)
+		return;
+
+	int pageNumber = 0;
+	for(int i = 0; i < notebook->GetPageCount(); i ++)
+		if(notebook->GetPage(i) == active)
+			pageNumber = i;
+	notebook->DeletePage(pageNumber);
 }
 
 void MainFrame::onExit(wxCommandEvent &event) {
@@ -124,44 +144,75 @@ void MainFrame::onExit(wxCommandEvent &event) {
 }
 
 void MainFrame::onUndo(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->Undo();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active != console)
+		if(dynamic_cast<CodeCtrl*>(active))
+			((CodeCtrl*)active)->Undo();
 }
 
 void MainFrame::onRedo(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->Redo();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active != console)
+		if(dynamic_cast<CodeCtrl*>(active))
+			((CodeCtrl*)active)->Redo();
 }
 
 void MainFrame::onCut(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->Cut();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active != console)
+		if(dynamic_cast<CodeCtrl*>(active))
+			((CodeCtrl*)active)->Cut();
 }
 
 void MainFrame::onCopy(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->Copy();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active == console)
+		console->Copy();
+	else if(dynamic_cast<CodeCtrl*>(active))
+		((CodeCtrl*)active)->Copy();
 }
 
 void MainFrame::onPaste(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->Paste();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active != console)
+		if(dynamic_cast<CodeCtrl*>(active))
+			((CodeCtrl*)active)->Paste();
 }
 
 void MainFrame::onSelectAll(wxCommandEvent &event) {
-	if(this->FindFocus() == textCode)
-		textCode->SelectAll();
+	wxWindow *active = this->FindFocus();
+	if(!active)
+		return;
+
+	if(active == console)
+		console->SelectAll();
+	else if(dynamic_cast<CodeCtrl*>(active))
+		((CodeCtrl*)active)->SelectAll();
 }
 
 void MainFrame::onExecute(wxCommandEvent &event) {
+	CodeCtrl *control = (CodeCtrl*) notebook->GetCurrentPage();
+	if(!control)
+		return;
+
+	// TODO: Fix calling method
 	wxCommandEvent tmp;
 	onSave(tmp);
-	console->Clear();
 
-	Console::GetSingleton() << wxT("Restarting session\n");
-	session.close();
-	session.start();
-	Console::GetSingleton() << wxT("Executing: ") << filename << "\n";
-	session.doFile(filename.char_str());
-	Console::GetSingleton() << "Execution done" << "\n";
+	control->execute();
 }
