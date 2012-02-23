@@ -108,6 +108,12 @@ void MainFrame::onSave(wxCommandEvent &event) {
 		wxFileDialog dialog(this, wxT("Save file"), wxEmptyString, wxEmptyString, wxT("Lua script files (*.lua)|*.lua"), wxFD_SAVE);
 		if(dialog.ShowModal() == wxID_OK)
 			active->save(dialog.GetFilename(), dialog.GetPath());
+		int pageNumber = 0;
+		for(int i = 0; i < notebook->GetPageCount(); i ++)
+			if(notebook->GetPage(i) == active)
+				pageNumber = i;
+		notebook->SetPageText(pageNumber, dialog.GetFilename());
+
 	}
 }
 
