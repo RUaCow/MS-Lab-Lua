@@ -9,9 +9,9 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 #include <vector>
 #include <ctime>
-
 #include "Column.h"
 #include "DatabaseIO.h"
 
@@ -19,7 +19,7 @@ class Database {
 
 	friend class DatabaseIO;
 
-	std::vector<Column*> table;
+	std::vector<std::pair<std::string, Column*> > table;
 
 	static DatabaseIO io;
 
@@ -34,7 +34,7 @@ public:
 	void clear();
 
 	Column* newColumn(const char name[], Column::Type type);
-	void addColumn(Column *column);
+	void addColumn(const char name[], Column *column);
 
 	Database random(int n) const;
 

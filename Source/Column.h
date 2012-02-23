@@ -33,12 +33,11 @@ public:
 private:
 	
 	Type type;
-	char name[MAX_STR_LEN];
 	std::vector<Variable> data;
 
 public:
 
-	Column(const char name[], Type type);
+	Column(Type type);
 	~Column();
 
 	void push_back(const Variable &var);

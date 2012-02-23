@@ -45,7 +45,7 @@ void Session::start() {
 			luabind::value("real", 2)
 		],
 		luabind::class_<Column>("Column")
-			.def(luabind::constructor<const char*, Column::Type>())
+			.def(luabind::constructor<Column::Type>())
 			.def("push", &Column::push)
 			.def("print", &Column::print),
 

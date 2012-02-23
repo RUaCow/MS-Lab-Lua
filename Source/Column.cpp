@@ -2,8 +2,8 @@
 #include "Console.h"
 using namespace std;
 
-Column::Column(const char name[], Type type) : type(type) {
-	strcpy(this->name, name);
+Column::Column(Type type) : type(type) {
+
 }
 
 Column::~Column() {
@@ -41,7 +41,6 @@ bool Column::isReal() const {
 }
 
 void Column::print() const {
-	Console::GetSingleton() << wxString(name, wxConvUTF8) << wxT(": ");
 	for(size_t i = 0; i < data.size(); i ++)
 		Console::GetSingleton() << wxString(data[i].toString(), wxConvUTF8) << wxT(" ");
 	Console::GetSingleton() << wxT("\n");
