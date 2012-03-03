@@ -2,7 +2,7 @@
 #include "CodeCtrl.h"
 using namespace std;
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.1 (Lua)")) {
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, wxT("M-S Lab v0.0.2 (Lua)")) {
 	manager.SetFrame(this);
 
 	wxMenu *menuFile = new wxMenu();

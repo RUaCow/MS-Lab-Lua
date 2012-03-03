@@ -7,8 +7,6 @@
 #ifndef _ULTRA_SINGLETON_H
 #define _ULTRA_SINGLETON_H
 
-// TODO: Overload constructor and operator= to prevent direct instancing
-
 template<class T> class Singleton {
 
 	static T* singleton_ptr; // Pointer to singleton

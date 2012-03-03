@@ -7,6 +7,7 @@ find_package(Boost REQUIRED)
 find_package(wxWidgets REQUIRED)
 find_package(Lua51 REQUIRED)
 find_package(Luabind REQUIRED)
+find_package(SDL REQUIRED)
 
 if(WIN32)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -26,6 +27,6 @@ endforeach(filename)
 	
 include("${wxWidgets_USE_FILE}")
 
-include_directories(${Boost_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LUABIND_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} ${LUABIND_INCLUDE_DIRS} ${SDL_INCLUDE_DIR})
 add_executable(MS-Lab-Lua WIN32 ${SRCS} ${INCS})
-target_link_libraries(MS-Lab-Lua ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES} ${LUA_LIBRARIES} ${LUABIND_LIBRARIES})
+target_link_libraries(MS-Lab-Lua ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES} ${LUA_LIBRARIES} ${LUABIND_LIBRARIES} ${SDL_LIBRARY})
