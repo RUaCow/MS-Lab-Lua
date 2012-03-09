@@ -21,8 +21,10 @@ class SDLDialog : public wxDialog {
 
 public:
 
-	SDLDialog(wxWindow *parent);
+	SDLDialog(wxWindow *parent, int w, int h);
 	~SDLDialog();
+
+	SDL_Surface* getSurface();
 
 private:
 

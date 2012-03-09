@@ -7,13 +7,17 @@ BEGIN_EVENT_TABLE(SDLDialog, wxDialog)
     EVT_IDLE(SDLDialog::onIdle)
 END_EVENT_TABLE()
 
-SDLDialog::SDLDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, wxT("M-S Lab Diagram View"), wxDefaultPosition, wxDefaultSize) {
+SDLDialog::SDLDialog(wxWindow *parent, int w, int h) : wxDialog(parent, wxID_ANY, wxT("M-S Lab Diagram View"), wxDefaultPosition, wxSize(w, h)) {
 	surface = SDL_CreateRGBSurface(SDL_HWSURFACE, GetSize().x, GetSize().y, 24, 0, 0, 0, 0);
 }
 
 SDLDialog::~SDLDialog() {
 	// TODO: Memory problem. Not calling destructor when the close button is pressed.
 	SDL_FreeSurface(surface);
+}
+
+SDL_Surface* SDLDialog::getSurface() {
+	return surface;
 }
 
 void SDLDialog::onPaint(wxPaintEvent &event) {

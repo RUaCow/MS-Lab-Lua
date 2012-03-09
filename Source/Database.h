@@ -43,6 +43,9 @@ public:
 	void save(const char filename[]) const;
 	void load(const char filename[]);
 
+	// Diagram functions
+	void drawPie(int width = 400, int height = 300) const;
+
 }; // class Database
 
 #endif // _DATABASE_H

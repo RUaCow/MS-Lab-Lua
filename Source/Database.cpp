@@ -1,5 +1,9 @@
 #include "Database.h"
 #include "Console.h"
+#include "MainFrame.h"
+#include "SDLDialog.h"
+#include <SDL/SDL_gfxPrimitives.h>
+#include <algorithm>
 using namespace std;
 
 DatabaseIO Database::io = DatabaseIO();
@@ -87,4 +91,22 @@ void Database::save(const char filename[]) const {
 
 void Database::load(const char filename[]) {
 	io.loadText(filename, this);
+}
+
+void Database::drawPie(int width, int height) const {
+	SDLDialog *dlg = new SDLDialog(MainFrame::GetSingletonPtr(), width, height);
+	
+	int sum = 0;
+	for(int i = 0; i < table[0].second->data.size(); i ++)
+		sum += table[0].second->data[i].toInteger();
+
+	float start = 0;
+	for(int i = 0; i < table[0].second->data.size(); i ++) {
+		float data = table[0].second->data[i].toInteger();
+		float end = start + (data * 360 / sum);
+		filledPieRGBA(dlg->getSurface(), width/2, height/2, min(width, height)/2 - 50, start, end, rand()%255, rand()%255, rand()%255, 255);
+		start = end;
+	}
+	
+	dlg->Show();
 }

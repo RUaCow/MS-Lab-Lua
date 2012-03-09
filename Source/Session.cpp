@@ -56,6 +56,7 @@ void Session::start() {
 			.def("rand", &Database::random)
 			.def("save", &Database::save)
 			.def("load", &Database::load)
+			.def("pie", &Database::drawPie)
 	];
 }
 
