@@ -12,8 +12,9 @@
 #include "wxFrameManager.h"
 
 #include "Console.h"
+#include "Singleton.h"
 
-class MainFrame : public wxFrame {
+class MainFrame : public wxFrame, public Singleton<MainFrame> {
 
 	wxFrameManager manager;
 	Console *console;
