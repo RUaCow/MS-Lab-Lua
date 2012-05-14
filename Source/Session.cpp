@@ -38,14 +38,8 @@ void Session::start() {
 	luabind::module(state) [
 		luabind::def("echo", &echo),
 		
-		luabind::class_<Variable>("Variable")
-		.enum_("Type") [
-			luabind::value("string", 0),
-			luabind::value("integer", 1),
-			luabind::value("real", 2)
-		],
 		luabind::class_<Column>("Column")
-			.def(luabind::constructor<Column::Type>())
+			.def(luabind::constructor<>())
 			.def("push", &Column::push)
 			.def("print", &Column::print),
 

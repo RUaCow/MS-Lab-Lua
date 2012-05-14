@@ -1,8 +1,9 @@
 #include "Column.h"
 #include "Console.h"
+#include <boost/lexical_cast.hpp>
 using namespace std;
 
-Column::Column(Type type) : type(type) {
+Column::Column() {
 
 }
 
@@ -10,38 +11,33 @@ Column::~Column() {
 
 }
 
-void Column::push_back(const Variable &var) {
+void Column::push_back(const string &var) {
 	data.push_back(var);
 }
 
 void Column::push(int size, luabind::object const& lua_arr) {
-	for(int i = 1; i <= size; i ++)
-		if(type == VAR_STRING) {
+	for(int i = 1; i <= size; i ++) {
+		// TODO: MUST be a better way to cast objects!!
+		try {
 			const char* var = luabind::object_cast<const char*>(lua_arr[i]);
-			data.push_back(Variable(var));
-		} else if(type == VAR_INTEGER) {
-			int var = luabind::object_cast<int>(lua_arr[i]);
-			data.push_back(Variable(var));
-		} else if(type == VAR_REAL) {
+			data.push_back(string(var));
+		} catch (std::exception&) {
 			float var = luabind::object_cast<float>(lua_arr[i]);
-			data.push_back(Variable(var));
+			data.push_back(boost::lexical_cast<string>(var));
 		}
-}
-
-bool Column::isString() const {
-	return (type == VAR_STRING);
-}
-
-bool Column::isInteger() const {
-	return (type == VAR_INTEGER);
-}
-
-bool Column::isReal() const {
-	return (type == VAR_REAL);
+	}
 }
 
 void Column::print() const {
 	for(size_t i = 0; i < data.size(); i ++)
-		Console::GetSingleton() << wxString(data[i].toString(), wxConvUTF8) << wxT(" ");
+		Console::GetSingleton() << wxString(data[i].c_str(), wxConvUTF8) << wxT(" ");
 	Console::GetSingleton() << wxT("\n");
+}
+
+string Column::at(const int index) const {
+	return data[index];
+}
+
+unsigned Column::getSize() const {
+	return data.size();
 }

@@ -12,42 +12,23 @@
 #include <luabind/lua_include.hpp>
 #include <luabind/luabind.hpp>
 #include <vector>
-#include "Variable.h"
-
-class Database;
-class DatabaseIO;
 
 class Column {
 
-	friend class Database;
-	friend class DatabaseIO;
-
-public:
-	
-	enum Type {
-		VAR_STRING = 0,
-		VAR_INTEGER = 1,
-		VAR_REAL = 2
-	};
-
-private:
-	
-	Type type;
-	std::vector<Variable> data;
+	std::vector<std::string> data;
 
 public:
 
-	Column(Type type);
+	Column();
 	~Column();
 
-	void push_back(const Variable &var);
+	void push_back(const std::string &var);
 	void push(int size, luabind::object const& lua_arr);
 
-	bool isString() const;
-	bool isInteger() const;
-	bool isReal() const;
-
 	void print() const;
+
+	std::string at(const int index) const;
+	unsigned getSize() const;
 
 }; // class Column
 

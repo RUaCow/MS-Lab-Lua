@@ -28,7 +28,7 @@ public:
 
 	void clear();
 
-	Column* newColumn(const char name[], Column::Type type);
+	Column* newColumn(const char name[]);
 	void addColumn(const char name[], Column *column);
 
 	Database random(int n) const;
