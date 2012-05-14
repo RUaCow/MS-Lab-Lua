@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <fstream>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 using namespace std;
 
 Database::Database() {
@@ -118,5 +119,29 @@ void Database::saveExcel(const string &filename) const {
 }
 
 void Database::loadExcel(const string &filename) {
-	// TODO: Write load code here
+	ifstream input(filename.c_str(), ios::in);
+	if(!input)
+		return;
+
+	this->clear();
+
+	string line;
+	getline(input, line);
+
+	stringstream ss(line);
+	string section;
+	while(ss >> section)
+		this->newColumn(section.c_str());
+
+	while(getline(input, line)) {
+		ss = stringstream(line);
+		
+		for(int i = 0; i < table.size(); i ++) {
+			getline(ss, section, '\t');
+			boost::algorithm::trim(section);
+
+			if(section.length())
+				table[i].second->push_back(section);
+		}
+	}
 }
