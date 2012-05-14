@@ -6,8 +6,6 @@
 #include <algorithm>
 using namespace std;
 
-DatabaseIO Database::io = DatabaseIO();
-
 Database::Database() {
 
 }
@@ -85,12 +83,14 @@ void Database::print() const {
 	}
 }
 
-void Database::save(const char filename[]) const {
-	io.saveText(filename, this);
+void Database::save(const string &filename) const {
+	if(filename.substr(filename.find_last_of('.')) == ".xlsx")
+		saveExcel(filename);
 }
 
-void Database::load(const char filename[]) {
-	io.loadText(filename, this);
+void Database::load(const string &filename) {
+	if(filename.substr(filename.find_last_of('.')) == ".xlsx")
+		loadExcel(filename);
 }
 
 void Database::drawPie(int width, int height) const {
@@ -109,4 +109,12 @@ void Database::drawPie(int width, int height) const {
 	}
 	
 	dlg->Show();
+}
+
+void Database::saveExcel(const string &filename) const {
+	// TODO: Write save code here
+}
+
+void Database::loadExcel(const string &filename) {
+	// TODO: Write load code here
 }

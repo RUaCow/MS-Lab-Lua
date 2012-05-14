@@ -13,15 +13,10 @@
 #include <vector>
 #include <ctime>
 #include "Column.h"
-#include "DatabaseIO.h"
 
 class Database {
 
-	friend class DatabaseIO;
-
 	std::vector<std::pair<std::string, Column*> > table;
-
-	static DatabaseIO io;
 
 public:
 
@@ -40,11 +35,16 @@ public:
 
 	void print() const;
 
-	void save(const char filename[]) const;
-	void load(const char filename[]);
+	void save(const std::string &filename) const;
+	void load(const std::string &filename);
 
 	// Diagram functions
 	void drawPie(int width = 400, int height = 300) const;
+
+private:
+
+	void saveExcel(const std::string &filename) const;
+	void loadExcel(const std::string &filename);
 
 }; // class Database
 
