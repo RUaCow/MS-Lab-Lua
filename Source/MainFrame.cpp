@@ -220,5 +220,9 @@ void MainFrame::onExecute(wxCommandEvent &event) {
 	wxCommandEvent tmp;
 	onSave(tmp);
 
+	// Show the console if it is closed
+	manager.GetPane(console).Show();
+	manager.Update();
+
 	control->execute();
 }
