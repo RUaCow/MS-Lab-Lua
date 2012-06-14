@@ -87,12 +87,12 @@ void Database::print() const {
 }
 
 void Database::save(const string &filename) const {
-	if(filename.substr(filename.find_last_of('.')) == ".xlsx")
+	if(filename.substr(filename.find_last_of('.')) == ".txt")
 		saveExcel(filename);
 }
 
 void Database::load(const string &filename) {
-	if(filename.substr(filename.find_last_of('.')) == ".xlsx")
+	if(filename.substr(filename.find_last_of('.')) == ".txt")
 		loadExcel(filename);
 }
 
@@ -115,7 +115,30 @@ void Database::drawPie(int width, int height) const {
 }
 
 void Database::saveExcel(const string &filename) const {
-	// TODO: Write save code here
+	ofstream output(filename.c_str(), ios::out);
+
+	unsigned max = 0;
+	for(unsigned i = 0; i < table.size(); i ++) {
+		output << table[i].first;
+		if(i != table.size() - 1)
+			output << "\t";
+
+		if(table[i].second->getSize() > max)
+			max = table[i].second->getSize();
+	}
+	output << endl;
+
+	for(unsigned i = 0; i < max; i ++) {
+		for(unsigned j = 0; j < table.size(); j ++) {
+			if(i < table[j].second->getSize())
+				output << table[j].second->at(i);
+			if(j != table.size() - 1)
+				output << "\t";
+		}
+		output << endl;
+	}
+
+	output.close();
 }
 
 void Database::loadExcel(const string &filename) {
