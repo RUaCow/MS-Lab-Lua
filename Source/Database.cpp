@@ -163,8 +163,7 @@ void Database::loadExcel(const string &filename) {
 			getline(ss, section, '\t');
 			boost::algorithm::trim(section);
 
-			if(section.length())
-				table[i].second->push_back(section);
+			table[i].second->push_back(section);
 		}
 	}
 }
