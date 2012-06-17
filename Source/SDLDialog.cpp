@@ -5,6 +5,7 @@ IMPLEMENT_CLASS(SDLDialog, wxDialog)
 BEGIN_EVENT_TABLE(SDLDialog, wxDialog)
     EVT_PAINT(SDLDialog::onPaint)
     EVT_IDLE(SDLDialog::onIdle)
+	EVT_CLOSE(SDLDialog::onClose)
 END_EVENT_TABLE()
 
 SDLDialog::SDLDialog(wxWindow *parent, int w, int h) : wxDialog(parent, wxID_ANY, wxT("M-S Lab Diagram View"), wxDefaultPosition, wxSize(w, h)) {
@@ -12,8 +13,7 @@ SDLDialog::SDLDialog(wxWindow *parent, int w, int h) : wxDialog(parent, wxID_ANY
 }
 
 SDLDialog::~SDLDialog() {
-	// TODO: Memory problem. Not calling destructor when the close button is pressed.
-	SDL_FreeSurface(surface);
+
 }
 
 SDL_Surface* SDLDialog::getSurface() {
@@ -29,3 +29,7 @@ void SDLDialog::onIdle(wxIdleEvent &event) {
 	Refresh(false);
 }
 
+void SDLDialog::onClose(wxCloseEvent &event) {
+	SDL_FreeSurface(surface);
+	this->Destroy();
+}

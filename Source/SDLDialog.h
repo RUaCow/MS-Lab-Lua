@@ -30,6 +30,7 @@ private:
 
 	void onPaint(wxPaintEvent &event);
 	void onIdle(wxIdleEvent &event);
+	void onClose(wxCloseEvent &event);
 
 }; // class SDLDialog
 
