@@ -1,11 +1,7 @@
 #include "Database.h"
 #include "Console.h"
-#include "MainFrame.h"
-#include "SDLDialog.h"
-#include <SDL/SDL_gfxPrimitives.h>
 #include <algorithm>
 #include <fstream>
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 using namespace std;
 
@@ -94,24 +90,6 @@ void Database::save(const string &filename) const {
 void Database::load(const string &filename) {
 	if(filename.substr(filename.find_last_of('.')) == ".txt")
 		loadExcel(filename);
-}
-
-void Database::drawPie(int width, int height) const {
-	SDLDialog *dlg = new SDLDialog(MainFrame::GetSingletonPtr(), width, height);
-	
-	int sum = 0;
-	for(int i = 0; i < table[0].second->getSize(); i ++)
-		sum += boost::lexical_cast<int>(table[0].second->at(i));
-
-	float start = 0;
-	for(int i = 0; i < table[0].second->getSize(); i ++) {
-		float data = boost::lexical_cast<int>(table[0].second->at(i));
-		float end = start + (data * 360 / sum);
-		filledPieRGBA(dlg->getSurface(), width/2, height/2, min(width, height)/2 - 50, start, end, rand()%255, rand()%255, rand()%255, 255);
-		start = end;
-	}
-	
-	dlg->Show();
 }
 
 void Database::saveExcel(const string &filename) const {
